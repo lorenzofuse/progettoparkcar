@@ -19,4 +19,3 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-//AF18-BD21
