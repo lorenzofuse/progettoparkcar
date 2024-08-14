@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "375114089424",
+    "project_id": "progettoparkcar",
+    "storage_bucket": "progettoparkcar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375114089424:android:b1c54b0b5db57ef542afd5",
+        "android_client_info": {
+          "package_name": "com.example.progettoparkcar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2iQ9HpVPsobLWgUn4Px2v5VYcqNlWqkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
