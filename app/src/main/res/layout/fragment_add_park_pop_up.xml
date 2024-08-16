@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="400dp"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.AddParkPopUpFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Sostituzione del MapView con SupportMapFragment -->
+        <FrameLayout
+            android:id="@+id/map_container"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/todoNextBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView1"
+            app:layout_constraintVertical_bias="0.484">
+
+            <fragment
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:id="@+id/map_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <!-- Bottone chiusura -->
+        <ImageView
+            android:id="@+id/todoClose"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_launcher_close"
+            app:layout_constraintEnd_toEndOf="@+id/cardView1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Card con TextInput -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardView1"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/todoClose">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/todoEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:hint="@string/type_your_task"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="12dp"
+                    android:paddingTop="15dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Bottone Next -->
+        <ImageView
+            android:id="@+id/todoNextBtn"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:src="@drawable/btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/cardView1"
+            app:layout_constraintTop_toBottomOf="@+id/cardView1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

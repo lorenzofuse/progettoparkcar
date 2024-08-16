@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.map.secret)
     id("com.google.gms.google-services")
 }
 
@@ -46,6 +47,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation(libs.google.maps)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
