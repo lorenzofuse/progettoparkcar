@@ -53,6 +53,8 @@ class SignUpFragment : Fragment() {
                 } else {
                     Toast.makeText(context, "Le password non corrispondono", Toast.LENGTH_SHORT).show()
                 }
+            }else{
+                Toast.makeText(context, "Campi vuoti non ammessi", Toast.LENGTH_SHORT).show()
             }
         }
     }

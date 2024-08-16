@@ -48,6 +48,9 @@ class SignInFragment : Fragment() {
                         Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
                     }
                 }
+            }else{
+                Toast.makeText(context, "Campi vuoti non ammessi", Toast.LENGTH_SHORT).show()
+
             }
         }
     }
