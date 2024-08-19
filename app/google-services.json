@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "375114089424",
+    "firebase_url": "https://progettoparkcar-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "progettoparkcar",
     "storage_bucket": "progettoparkcar.appspot.com"
   },
