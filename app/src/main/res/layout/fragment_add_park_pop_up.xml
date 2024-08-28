@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Sostituzione del MapView con SupportMapFragment -->
+
         <FrameLayout
             android:id="@+id/map_container"
             android:layout_width="300dp"
@@ -30,7 +30,7 @@
                 android:layout_height="match_parent" />
         </FrameLayout>
 
-        <!-- Bottone chiusura -->
+
         <ImageView
             android:id="@+id/todoClose"
             android:layout_width="25dp"
@@ -40,7 +40,7 @@
             app:layout_constraintEnd_toEndOf="@+id/cardView1"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Card con TextInput -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardView1"
             android:layout_width="300dp"

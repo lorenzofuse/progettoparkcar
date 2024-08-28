@@ -32,6 +32,12 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
             with(list[position]) {
                 binding.todoTask.text = this.task
 
+                val locationText  = this.location?.let{
+                    "Lat : ${it.latitude}, Lng : ${it.longitude}"
+                } ?: "Posizione non disponibile"
+
+                binding.locationText.text =locationText
+
                 binding.deleteTask.setOnClickListener {
                     listener?.onDeleteParkBtnClicked(this)
                 }

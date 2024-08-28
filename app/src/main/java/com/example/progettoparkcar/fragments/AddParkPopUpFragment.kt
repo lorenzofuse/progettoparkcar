@@ -15,6 +15,8 @@ class AddParkPopUpFragment : DialogFragment() {
 
     private lateinit var binding: FragmentAddParkPopUpBinding
     private lateinit var listener: DialogBtnClickListener
+    private var currentLocation : LatLng? = null
+
 
     fun setListener(listener: DialogBtnClickListener) {
         this.listener = listener
@@ -24,7 +26,7 @@ class AddParkPopUpFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         binding = FragmentAddParkPopUpBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,11 +39,11 @@ class AddParkPopUpFragment : DialogFragment() {
     private fun registerEvent() {
         binding.todoNextBtn.setOnClickListener {
             val todoTask = binding.todoEt.text.toString()
-            // Assume latitudine e longitudine per esempio, puoi sostituirli con la tua logica
+
             val currentLocation = LatLng(40.748817, -73.985428)
             Log.d("AddParkPopUpFragment", "Button clicked: Task: $todoTask, Location: $currentLocation")
 
-            // Verifica se il campo di testo non è vuoto
+
             if (todoTask.isNotBlank() && currentLocation != null) {
                 listener.onSaveTask(todoTask, binding.todoEt, currentLocation)
             } else {

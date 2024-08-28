@@ -75,34 +75,19 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
         }
     }
 
-    private fun getDataFromFirebase(){
-        databaseRef.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                mList.clear()
-                for(taskSnapshot in snapshot.children){
-                    val todoTask = taskSnapshot.key?.let{
-                        ToDoData(it, taskSnapshot.value.toString())
-                    }
 
-                    if(todoTask!= null){
-                        mList.add(todoTask)
-                    }
-                }
-                adapter.notifyDataSetChanged()
-             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-             }
-
-        })
-    }
 
     override fun onSaveTask(todo: String, todoEt: TextInputEditText, location: LatLng) {
-        Log.d("HomeFragment", "Salvando task: $todo con posizione: $location")
+        Log.d("HomeFragment", "Salvando il park: $todo con posizione: $location")
+
+
+        val taskData = mapOf(
+            "Park" to todo,
+            "Posizione" to mapOf("latitudine" to location.latitude, "longitudine" to location.longitude)
+        )
 
         // Salva il park su Firebase
-        databaseRef.push().setValue(mapOf("task" to todo, "location" to location)).addOnCompleteListener {
+        databaseRef.push().setValue(taskData).addOnCompleteListener {
             if (it.isSuccessful) {
                 Toast.makeText(context, "Park salvato correttamente", Toast.LENGTH_SHORT).show()
                 todoEt.text = null
@@ -112,6 +97,35 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
             }
             popUpFragment.dismiss()
         }
+    }
+
+    private fun getDataFromFirebase(){
+        databaseRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                mList.clear()
+                for(taskSnapshot in snapshot.children){
+                    val taskId = taskSnapshot.key
+                    val taskTitle = taskSnapshot.child("Park").getValue(String::class.java)
+                    val locationSnapshot = taskSnapshot.child("Posizione")
+                    val location = LatLng(
+                        locationSnapshot.child("latitudine").getValue(Double::class.java) ?: 0.0,
+                        locationSnapshot.child("longitudine").getValue(Double::class.java) ?: 0.0,
+                        )
+
+
+                    if (taskId != null && taskTitle != null) {
+                        val todoTask = ToDoData(taskSnapshot.key!!, taskTitle, location)
+                        mList.add(todoTask)
+                    }
+                }
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     override fun onDeleteParkBtnClicked(toDoData: ToDoData) {
@@ -126,6 +140,6 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     }
 
     override fun onEditParkBtnClicked(toDoData: ToDoData) {
-        TODO("Not yet implemented")
+
     }
 }

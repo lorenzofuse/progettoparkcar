@@ -45,5 +45,18 @@
         android:id="@+id/homeFragment"
         android:name="com.example.progettoparkcar.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_addParkPopUpFragment"
+            app:destination="@id/addParkPopUpFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/addParkPopUpFragment"
+        android:name="com.example.progettoparkcar.fragments.AddParkPopUpFragment"
+        android:label="fragment_add_park_pop_up"
+        tools:layout="@layout/fragment_add_park_pop_up" >
+        <action
+            android:id="@+id/action_addParkPopUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </dialog>
 </navigation>
