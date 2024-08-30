@@ -45,13 +45,26 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
                 binding.editTask.setOnClickListener {
                     listener?.onEditParkBtnClicked(this)
                 }
+
+                binding.viewMapTask.setOnClickListener{
+                    listener?.onMapClicked(this)
+                }
             }
+        }
+    }
+
+    fun updatePark(updateToDoData: ToDoData){
+        val index = list.indexOfFirst { it.taskId == updateToDoData.taskId }
+        if(index!=-1){
+            list[index] = updateToDoData
+            notifyItemChanged(index)
         }
     }
 
     interface ToDoAdapterInterface {
         fun onDeleteParkBtnClicked(toDoData: ToDoData)
         fun onEditParkBtnClicked(toDoData: ToDoData)
+        fun onMapClicked(toDoData: ToDoData)
     }
 
 }

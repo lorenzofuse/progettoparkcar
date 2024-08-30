@@ -1,12 +1,13 @@
 package com.example.progettoparkcar.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -32,6 +33,7 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     private lateinit var popUpFragment: AddParkPopUpFragment
     private lateinit var adapter : ToDoAdapter
     private lateinit var mList:MutableList<ToDoData>
+    private var isEditing = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,14 +88,31 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
             "Posizione" to mapOf("latitudine" to location.latitude, "longitudine" to location.longitude)
         )
 
-        // Salva il park su Firebase
-        databaseRef.push().setValue(taskData).addOnCompleteListener {
-            if (it.isSuccessful) {
-                Toast.makeText(context, "Park salvato correttamente", Toast.LENGTH_SHORT).show()
+
+        val taskRef = if(isEditing){
+            databaseRef.child(popUpFragment.toDoData!!.taskId)
+        }else{
+            databaseRef.push()
+        }
+
+
+        taskRef.push().setValue(taskData).addOnCompleteListener {task ->
+            if (task.isSuccessful) {
+                val message = if(isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 todoEt.text = null
+                if(isEditing){
+                    val updateToDoData = ToDoData(popUpFragment.toDoData!!.taskId, todo, location)
+                    val index = mList.indexOfFirst { it.taskId == updateToDoData.taskId }
+                    if(index!= -1){
+                        mList[index] = updateToDoData
+                        adapter.notifyItemChanged(index)
+                    }
+                    isEditing=false
+                }
             } else {
-                Log.e("HomeFragment", "Errore nel salvataggio: ${it.exception?.message}")
-                Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT).show()
+                Log.e("HomeFragment", "Errore nel salvataggio: ${task.exception?.message}")
+                Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
             }
             popUpFragment.dismiss()
         }
@@ -140,6 +159,22 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     }
 
     override fun onEditParkBtnClicked(toDoData: ToDoData) {
+        isEditing=true
+        popUpFragment = AddParkPopUpFragment.newInstance(toDoData)
+        popUpFragment.setListener(this)
+        popUpFragment.show(
+            childFragmentManager,
+            "AddParkPopUpFragment"
+        )
+    }
 
+
+
+
+    override fun onMapClicked(toDoData: ToDoData) {
+        val uri = Uri.parse("geo:${toDoData.location?.latitude},${toDoData.location?.longitude}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, uri)
+        mapIntent.setPackage("com.google.android.apps.maps")
+        startActivity(mapIntent)
     }
 }

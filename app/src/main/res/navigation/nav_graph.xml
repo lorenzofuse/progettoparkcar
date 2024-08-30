@@ -49,6 +49,9 @@
         <action
             android:id="@+id/action_homeFragment_to_addParkPopUpFragment"
             app:destination="@id/addParkPopUpFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addParkPopUpFragment2"
+            app:destination="@id/addParkPopUpFragment" />
     </fragment>
     <dialog
         android:id="@+id/addParkPopUpFragment"

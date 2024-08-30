@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.progettoparkcar.databinding.FragmentAddParkPopUpBinding
+import com.example.progettoparkcar.utils.ToDoData
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
 
@@ -16,8 +17,14 @@ class AddParkPopUpFragment : DialogFragment() {
     private lateinit var binding: FragmentAddParkPopUpBinding
     private lateinit var listener: DialogBtnClickListener
     private var currentLocation : LatLng? = null
-
-
+    var toDoData : ToDoData? = null
+    companion object {
+        fun newInstance(toDoData: ToDoData): AddParkPopUpFragment {
+            val fragment = AddParkPopUpFragment()
+            fragment.toDoData = toDoData
+            return fragment
+        }
+    }
     fun setListener(listener: DialogBtnClickListener) {
         this.listener = listener
     }
@@ -58,5 +65,8 @@ class AddParkPopUpFragment : DialogFragment() {
 
     interface DialogBtnClickListener {
         fun onSaveTask(todo: String, todoEt: TextInputEditText, location: LatLng)
+    }
+    interface AddParkPopUpListener : DialogBtnClickListener {
+        fun onSaveButtonClicked(updatedToDoData: ToDoData)
     }
 }
