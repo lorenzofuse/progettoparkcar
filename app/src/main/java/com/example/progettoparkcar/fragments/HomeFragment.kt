@@ -82,33 +82,37 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     override fun onSaveTask(todo: String, todoEt: TextInputEditText, location: LatLng) {
         Log.d("HomeFragment", "Salvando il park: $todo con posizione: $location")
 
-
         val taskData = mapOf(
             "Park" to todo,
             "Posizione" to mapOf("latitudine" to location.latitude, "longitudine" to location.longitude)
         )
 
-
-        val taskRef = if(isEditing){
+        val taskRef = if (isEditing) {
+            // Usare il taskId esistente per aggiornare il park
             databaseRef.child(popUpFragment.toDoData!!.taskId)
-        }else{
+        } else {
+            // Usare push solo per creare un nuovo park
             databaseRef.push()
         }
 
-
-        taskRef.push().setValue(taskData).addOnCompleteListener {task ->
+        // Usare setValue per impostare i dati una sola volta
+        taskRef.setValue(taskData).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val message = if(isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
+                val message = if (isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 todoEt.text = null
-                if(isEditing){
+                if (isEditing) {
                     val updateToDoData = ToDoData(popUpFragment.toDoData!!.taskId, todo, location)
                     val index = mList.indexOfFirst { it.taskId == updateToDoData.taskId }
-                    if(index!= -1){
+                    if (index != -1) {
                         mList[index] = updateToDoData
                         adapter.notifyItemChanged(index)
                     }
-                    isEditing=false
+                    isEditing = false
+                } else {
+                    val newToDoData = ToDoData(taskRef.key!!, todo, location)
+                    mList.add(newToDoData)
+                    adapter.notifyItemInserted(mList.size - 1)
                 }
             } else {
                 Log.e("HomeFragment", "Errore nel salvataggio: ${task.exception?.message}")

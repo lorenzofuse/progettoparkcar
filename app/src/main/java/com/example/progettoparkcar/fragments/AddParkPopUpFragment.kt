@@ -7,12 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.example.progettoparkcar.R
 import com.example.progettoparkcar.databinding.FragmentAddParkPopUpBinding
 import com.example.progettoparkcar.utils.ToDoData
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.textfield.TextInputEditText
 
-class AddParkPopUpFragment : DialogFragment() {
+class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentAddParkPopUpBinding
     private lateinit var listener: DialogBtnClickListener
@@ -40,6 +47,10 @@ class AddParkPopUpFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+
         registerEvent()
     }
 
@@ -66,7 +77,21 @@ class AddParkPopUpFragment : DialogFragment() {
     interface DialogBtnClickListener {
         fun onSaveTask(todo: String, todoEt: TextInputEditText, location: LatLng)
     }
-    interface AddParkPopUpListener : DialogBtnClickListener {
-        fun onSaveButtonClicked(updatedToDoData: ToDoData)
+    override fun onMapReady(map:GoogleMap) {
+
+
+        val latLng = LatLng(28.7041, 77.1025)
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,19f))
+
+        val markerOptions = MarkerOptions()
+        markerOptions.position(latLng)
+        markerOptions.title("Posizione")
+        markerOptions.snippet("La macchina è qui")
+        markerOptions.alpha(3f)
+        markerOptions.zIndex(1f)
+         markerOptions.flat(true)
+        markerOptions.visible(true)
+         map?.addMarker(markerOptions)
     }
+
 }
