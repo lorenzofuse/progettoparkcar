@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.progettoparkcar.R
 import com.example.progettoparkcar.databinding.FragmentHomeBinding
 import com.example.progettoparkcar.utils.ToDoAdapter
 import com.example.progettoparkcar.utils.ToDoData
@@ -27,12 +28,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.Locale
+import javax.security.auth.login.LoginException
 
-class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
-    ToDoAdapter.ToDoAdapterInterface {
+class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, ToDoAdapter.ToDoAdapterInterface {
+
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseRef: DatabaseReference
-    private lateinit var navControl: NavController
+    private lateinit var navController: NavController
     private lateinit var binding: FragmentHomeBinding
     private lateinit var popUpFragment: AddParkPopUpFragment
     private lateinit var adapter: ToDoAdapter
@@ -57,7 +59,7 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     }
 
     private fun init(view: View) {
-        navControl = Navigation.findNavController(view)
+        navController = Navigation.findNavController(view)
         auth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().reference.child("Park")
             .child(auth.currentUser?.uid.toString())
@@ -78,6 +80,19 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
                 childFragmentManager,
                 "AddParkPopUpFragment"
             )
+        }
+
+        binding.btnLogout.setOnClickListener {
+            Log.d("HomeFragment", "Logout button clicked")
+            if (auth.currentUser != null) {
+                auth.signOut()
+                Log.d("HomeFragment", "User signed out")
+                Toast.makeText(context, "Logout effettuato", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.action_homeFragment_to_signInFragment)
+            } else {
+                Log.d("HomeFragment", "No user currently logged in")
+                Toast.makeText(context, "Nessun utente attualmente loggato", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -245,4 +260,6 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
             "Errore nell'ottenere l'indirizzo"
         }
     }
+
+
 }

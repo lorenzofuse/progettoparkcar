@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.textfield.TextInputEditText
 
+
 class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentAddParkPopUpBinding
@@ -86,7 +87,7 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
         currentLocation?.let {
             if (::map.isInitialized) {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 15f))
-                map.addMarker(MarkerOptions().position(it).title("La tua posizione"))
+                map.addMarker(MarkerOptions().position(it).title("La tua macchina"))
             }
         }
     }
@@ -105,7 +106,6 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
             val todoTask = binding.todoEt.text.toString()
 
             val locationToSave = currentLocation
-            Log.d("AddParkPopUpFragment", "Button clicked: Task: $todoTask, Location: $locationToSave")
 
             if (todoTask.isNotBlank() && locationToSave != null) {
                 listener.onSaveTask(todoTask, binding.todoEt, locationToSave)

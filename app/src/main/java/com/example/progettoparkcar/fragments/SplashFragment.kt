@@ -21,24 +21,21 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_splash, container, false)
+         return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize FirebaseAuth and NavController
-        auth = FirebaseAuth.getInstance()
+         auth = FirebaseAuth.getInstance()
         navControl = Navigation.findNavController(view)
 
-        // Delay navigation to the next fragment
-        Handler(Looper.getMainLooper()).postDelayed({
+         Handler(Looper.getMainLooper()).postDelayed({
             if (auth.currentUser != null) {
                 navControl.navigate(R.id.action_splashFragment_to_homeFragment)
             } else {
                 navControl.navigate(R.id.action_splashFragment_to_signInFragment)
             }
-        }, 2000) // 2 seconds delay
+        }, 2000)
     }
 }

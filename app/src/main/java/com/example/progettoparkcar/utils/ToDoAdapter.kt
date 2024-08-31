@@ -58,6 +58,8 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
                     listener?.onEditParkBtnClicked(this)
                 }
 
+
+
                 binding.viewMapTask.setOnClickListener {
                     listener?.onMapClicked(this)
                 }
