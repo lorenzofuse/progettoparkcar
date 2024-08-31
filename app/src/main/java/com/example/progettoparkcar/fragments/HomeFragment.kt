@@ -1,6 +1,9 @@
 package com.example.progettoparkcar.fragments
 
+import android.content.Context
 import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +26,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.util.Locale
 
 class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     ToDoAdapter.ToDoAdapterInterface {
@@ -31,8 +35,8 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     private lateinit var navControl: NavController
     private lateinit var binding: FragmentHomeBinding
     private lateinit var popUpFragment: AddParkPopUpFragment
-    private lateinit var adapter : ToDoAdapter
-    private lateinit var mList:MutableList<ToDoData>
+    private lateinit var adapter: ToDoAdapter
+    private lateinit var mList: MutableList<ToDoData>
     private var isEditing = false
 
     override fun onCreateView(
@@ -59,7 +63,7 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
             .child(auth.currentUser?.uid.toString())
 
         binding.mainRecyclerView.setHasFixedSize(true)
-        binding.mainRecyclerView.layoutManager=LinearLayoutManager(context)
+        binding.mainRecyclerView.layoutManager = LinearLayoutManager(context)
         mList = mutableListOf()
         adapter = ToDoAdapter(mList)
         adapter.setListener(this)
@@ -78,13 +82,15 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     }
 
 
-
     override fun onSaveTask(todo: String, todoEt: TextInputEditText, location: LatLng) {
         Log.d("HomeFragment", "Salvando il park: $todo con posizione: $location")
 
         val taskData = mapOf(
             "Park" to todo,
-            "Posizione" to mapOf("latitudine" to location.latitude, "longitudine" to location.longitude)
+            "Posizione" to mapOf(
+                "latitudine" to location.latitude,
+                "longitudine" to location.longitude
+            )
         )
 
         val taskRef = if (isEditing) {
@@ -97,14 +103,16 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
 
         taskRef.setValue(taskData).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val message = if (isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
+                val message =
+                    if (isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 Log.d("HomeFragment", message)
 
                 todoEt.text = null
 
                 if (!isEditing) {
-                    val updateToDoData = ToDoData(popUpFragment.toDoData?.taskId ?: "", todo, location)
+                    val updateToDoData =
+                        ToDoData(popUpFragment.toDoData?.taskId ?: "", todo, location)
                     val index = mList.indexOfFirst { it.taskId == updateToDoData.taskId }
                     if (index != -1) {
                         mList[index] = updateToDoData
@@ -122,24 +130,28 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
                 }
             } else {
 
-                Toast.makeText(context, "Errore nel salvataggio: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Errore nel salvataggio: ${task.exception?.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             popUpFragment.dismiss()
         }
     }
 
-    private fun getDataFromFirebase(){
-        databaseRef.addValueEventListener(object : ValueEventListener{
+    private fun getDataFromFirebase() {
+        databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 mList.clear()
-                for(taskSnapshot in snapshot.children){
+                for (taskSnapshot in snapshot.children) {
                     val taskId = taskSnapshot.key
                     val taskTitle = taskSnapshot.child("Park").getValue(String::class.java)
                     val locationSnapshot = taskSnapshot.child("Posizione")
                     val location = LatLng(
                         locationSnapshot.child("latitudine").getValue(Double::class.java) ?: 0.0,
                         locationSnapshot.child("longitudine").getValue(Double::class.java) ?: 0.0,
-                        )
+                    )
 
 
                     if (taskId != null && taskTitle != null) {
@@ -159,9 +171,9 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
 
     override fun onDeleteParkBtnClicked(toDoData: ToDoData) {
         databaseRef.child(toDoData.taskId).removeValue().addOnCompleteListener {
-            if(it.isSuccessful){
+            if (it.isSuccessful) {
                 Toast.makeText(context, "Cancellazione effettuata", Toast.LENGTH_SHORT).show()
-            }else{
+            } else {
                 Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT).show()
 
             }
@@ -169,7 +181,7 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
     }
 
     override fun onEditParkBtnClicked(toDoData: ToDoData) {
-        isEditing=true
+        isEditing = true
         popUpFragment = AddParkPopUpFragment.newInstance(toDoData)
         popUpFragment.setListener(this)
         popUpFragment.show(
@@ -183,5 +195,54 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
         val mapIntent = Intent(Intent.ACTION_VIEW, uri)
         mapIntent.setPackage("com.google.android.apps.maps")
         startActivity(mapIntent)
+    }
+
+    override fun onShareLocationClicked(toDoData: ToDoData) {
+        val location = toDoData.location
+        if (location != null) {
+            val address =
+                getAddressFromLocation(requireContext(), location.latitude, location.longitude)
+            val shareMessage =
+                if (address != "Indirizzo non trovato") {
+                    "La macchina è parcheggiata qui: $address (Latitudine: ${location.latitude}, Longitudine: ${location.longitude})"
+
+                } else {
+                    "La macchina è parcheggiata qui: Latitudine: ${location.latitude}, Longitudine: ${location.longitude}"
+
+                }
+
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shareMessage)
+            }
+
+            if (shareIntent.resolveActivity(requireContext().packageManager) != null) {
+                startActivity(Intent.createChooser(shareIntent, "Condividi posizione tramite"))
+            } else {
+                Toast.makeText(context, "Nessuna app disponibile per condividere la posizione", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, "Posizione non disponibile", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getAddressFromLocation(
+        context: Context,
+        latitude: Double,
+        longitude: Double
+    ): String {
+        return try {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1)!!
+            if (addresses.isNotEmpty()) {
+                addresses[0].getAddressLine(0) ?: "Indirizzo non trovato"
+            } else {
+                "Indirizzo non trovato"
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "Errore nell'ottenere l'indirizzo"
+        }
     }
 }

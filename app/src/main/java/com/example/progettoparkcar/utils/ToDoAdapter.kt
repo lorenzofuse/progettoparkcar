@@ -1,10 +1,12 @@
 package com.example.progettoparkcar.utils
 
+import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.progettoparkcar.databinding.EachparkBinding
 import com.example.progettoparkcar.databinding.FragmentAddParkPopUpBinding
+import java.util.Locale
 
 class ToDoAdapter(private val list: MutableList<ToDoData>) :
     RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder>() {
@@ -32,11 +34,21 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
             with(list[position]) {
                 binding.todoTask.text = this.task
 
-                val locationText  = this.location?.let{
-                    "Lat : ${it.latitude}, Lng : ${it.longitude}"
-                } ?: "Posizione non disponibile"
+                val location = this.location
+                if (location != null) {
+                    val geocoder = Geocoder(binding.root.context, Locale.getDefault())
+                    val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
-                binding.locationText.text =locationText
+                    val address = if (addresses!!.isNotEmpty()) {
+                        val streetAddress = addresses[0].getAddressLine(0)
+                        "$streetAddress"
+                    } else {
+                        "Indirizzo non trovato"
+                    }
+                    binding.locationText.text = address
+                } else {
+                    binding.locationText.text = "Posizione non disponibile"
+                }
 
                 binding.deleteTask.setOnClickListener {
                     listener?.onDeleteParkBtnClicked(this)
@@ -46,8 +58,12 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
                     listener?.onEditParkBtnClicked(this)
                 }
 
-                binding.viewMapTask.setOnClickListener{
+                binding.viewMapTask.setOnClickListener {
                     listener?.onMapClicked(this)
+                }
+
+                binding.share.setOnClickListener {
+                    listener?.onShareLocationClicked(this)
                 }
             }
         }
@@ -58,6 +74,8 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
         fun onDeleteParkBtnClicked(toDoData: ToDoData)
         fun onEditParkBtnClicked(toDoData: ToDoData)
         fun onMapClicked(toDoData: ToDoData)
+        fun onShareLocationClicked(toDoData: ToDoData)
     }
+
 
 }
