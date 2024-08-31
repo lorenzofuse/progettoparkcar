@@ -95,28 +95,34 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
             databaseRef.push()
         }
 
-        // Usare setValue per impostare i dati una sola volta
         taskRef.setValue(taskData).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val message = if (isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                Log.d("HomeFragment", message)
+
                 todoEt.text = null
+
                 if (isEditing) {
-                    val updateToDoData = ToDoData(popUpFragment.toDoData!!.taskId, todo, location)
+                    val updateToDoData = ToDoData(popUpFragment.toDoData?.taskId ?: "", todo, location)
                     val index = mList.indexOfFirst { it.taskId == updateToDoData.taskId }
                     if (index != -1) {
                         mList[index] = updateToDoData
                         adapter.notifyItemChanged(index)
+
                     }
                     isEditing = false
                 } else {
-                    val newToDoData = ToDoData(taskRef.key!!, todo, location)
-                    mList.add(newToDoData)
-                    adapter.notifyItemInserted(mList.size - 1)
+                    taskRef.key?.let { key ->
+                        val newToDoData = ToDoData(key, todo, location)
+                        mList.add(newToDoData)
+                        adapter.notifyItemInserted(mList.size - 1)
+
+                    }
                 }
             } else {
-                Log.e("HomeFragment", "Errore nel salvataggio: ${task.exception?.message}")
-                Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(context, "Errore nel salvataggio: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
             popUpFragment.dismiss()
         }

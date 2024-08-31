@@ -8,6 +8,7 @@
     tools:context=".fragments.AddParkPopUpFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -79,7 +80,7 @@
             android:layout_height="100dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/btn2"
+            android:src="@drawable/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
