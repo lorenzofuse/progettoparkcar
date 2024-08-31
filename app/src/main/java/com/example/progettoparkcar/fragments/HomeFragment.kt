@@ -103,7 +103,7 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
 
                 todoEt.text = null
 
-                if (isEditing) {
+                if (!isEditing) {
                     val updateToDoData = ToDoData(popUpFragment.toDoData?.taskId ?: "", todo, location)
                     val index = mList.indexOfFirst { it.taskId == updateToDoData.taskId }
                     if (index != -1) {
@@ -177,9 +177,6 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener,
             "AddParkPopUpFragment"
         )
     }
-
-
-
 
     override fun onMapClicked(toDoData: ToDoData) {
         val uri = Uri.parse("geo:${toDoData.location?.latitude},${toDoData.location?.longitude}")

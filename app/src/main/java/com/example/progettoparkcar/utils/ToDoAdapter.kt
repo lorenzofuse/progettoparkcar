@@ -53,13 +53,6 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
         }
     }
 
-    fun updatePark(updateToDoData: ToDoData){
-        val index = list.indexOfFirst { it.taskId == updateToDoData.taskId }
-        if(index!=-1){
-            list[index] = updateToDoData
-            notifyItemChanged(index)
-        }
-    }
 
     interface ToDoAdapterInterface {
         fun onDeleteParkBtnClicked(toDoData: ToDoData)
