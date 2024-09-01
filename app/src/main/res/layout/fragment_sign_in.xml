@@ -87,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:hint="@string/enter_your_email"
-                android:inputType="textPassword"
+                android:textColorHint="@color/black"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp" />
 
@@ -127,6 +127,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:hint="@string/enter_your_pass"
+                android:textColorHint="@color/black"
                 android:inputType="textPassword"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp" />
@@ -146,26 +147,36 @@
         app:layout_constraintEnd_toEndOf="@id/cardView3"
         app:layout_constraintTop_toBottomOf="@id/cardView3" />
 
-    <TextView
-        android:id="@+id/textview32"
+    <LinearLayout
+        android:id="@+id/loginTextContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Utente già registrato?"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/textViewSignIn"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@id/nextBtn" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/textViewSignIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" Accedi"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toEndOf="@+id/textview32"
-        app:layout_constraintTop_toTopOf="@id/textview32" />
+        <TextView
+            android:id="@+id/textview32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Utente non registrato?"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textViewSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registrati"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

@@ -67,6 +67,7 @@
                 android:layout_height="50dp"
                 android:background="@color/white"
                 android:hint="@string/enter_your_email"
+                android:textColorHint="@color/black"
                 android:inputType="textEmailAddress"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp" />
@@ -106,6 +107,7 @@
                 android:background="@color/white"
                 android:hint="@string/enter_your_pass"
                 android:inputType="textPassword"
+                android:textColorHint="@color/black"
                 android:paddingStart="12dp"
                 android:paddingTop="15dp" />
 
@@ -125,8 +127,7 @@
         app:cardElevation="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardView2">
 
 
@@ -144,6 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white"
+                android:textColorHint="@color/black"
                 android:hint="@string/re_enter_your_pass"
                 android:inputType="textPassword"
                 android:paddingStart="12dp"
@@ -156,39 +158,43 @@
 
     <ImageView
         android:id="@+id/nextBtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:src="@drawable/btn"
         app:layout_constraintEnd_toEndOf="@id/cardView3"
         app:layout_constraintTop_toBottomOf="@id/cardView3" />
 
-    <TextView
-        android:id="@+id/textview32"
+    <LinearLayout
+        android:id="@+id/loginTextContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:text="Utente già registrato?"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/textViewSignIn"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@id/nextBtn" />
+        <TextView
+            android:id="@+id/textview32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Utente già registrato?"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/textViewSignIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/textViewSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accedi"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginStart="4dp" />
 
-        android:text=" Accedi"
-
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textview32"
-        app:layout_constraintTop_toTopOf="@id/textview32" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
