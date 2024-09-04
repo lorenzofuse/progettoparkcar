@@ -120,16 +120,13 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        // Inizializza la variabile `map`
-        map = googleMap
+         map = googleMap
 
-        // Se `currentLocation` è già disponibile, aggiorna la mappa
-        currentLocation?.let {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 15f))
-            map.addMarker(MarkerOptions().position(it).title("La tua posizione"))
+         currentLocation?.let { location ->
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+            map.addMarker(MarkerOptions().position(location).title("La tua posizione"))
         } ?: run {
-            // Imposta una posizione predefinita se `currentLocation` non è ancora disponibile
-            val defaultLatLng = LatLng(28.7041, 77.1025) // Posizione predefinita
+             val defaultLatLng = LatLng(28.7041, 77.1025) // Posizione predefinita
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 10f))
             map.addMarker(
                 MarkerOptions()

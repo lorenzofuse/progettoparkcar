@@ -83,14 +83,14 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
         }
 
         binding.btnLogout.setOnClickListener {
-            Log.d("HomeFragment", "Logout button clicked")
+            Log.d("HomeFragment",  "button logout")
             if (auth.currentUser != null) {
                 auth.signOut()
-                Log.d("HomeFragment", "User signed out")
+                Log.d("HomeFragment", "User logout")
                 Toast.makeText(context, "Logout effettuato", Toast.LENGTH_SHORT).show()
                 navController.navigate(R.id.action_homeFragment_to_signInFragment)
             } else {
-                Log.d("HomeFragment", "No user currently logged in")
+                Log.d("HomeFragment", "Nessun User logged in")
                 Toast.makeText(context, "Nessun utente attualmente loggato", Toast.LENGTH_SHORT).show()
             }
         }
