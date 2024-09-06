@@ -32,6 +32,8 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
     private var currentLocation: LatLng? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var map: GoogleMap
+    var toDoData: ToDoData? = null
+
 
     companion object {
         fun newInstance(toDoData: ToDoData): AddParkPopUpFragment {
@@ -43,7 +45,6 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
-    var toDoData: ToDoData? = null
 
     fun setListener(listener: DialogBtnClickListener) {
         this.listener = listener
@@ -58,6 +59,14 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
 
         binding = FragmentAddParkPopUpBinding.inflate(inflater, container, false)
         return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+
+        registerEvent()
     }
 
     private fun getCurrentLocation() {
@@ -92,14 +101,7 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
-
-        registerEvent()
-    }
 
     private fun registerEvent() {
         binding.todoNextBtn.setOnClickListener {
@@ -126,7 +128,7 @@ class AddParkPopUpFragment : DialogFragment(), OnMapReadyCallback {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
             map.addMarker(MarkerOptions().position(location).title("La tua posizione"))
         } ?: run {
-             val defaultLatLng = LatLng(28.7041, 77.1025) // Posizione predefinita
+             val defaultLatLng = LatLng(45.4642700,  9.1895100) // Posizione predefinita
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 10f))
             map.addMarker(
                 MarkerOptions()

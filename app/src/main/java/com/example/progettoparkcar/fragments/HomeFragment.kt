@@ -83,22 +83,18 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
         }
 
         binding.btnLogout.setOnClickListener {
-            Log.d("HomeFragment",  "button logout")
-            if (auth.currentUser != null) {
+             if (auth.currentUser != null) {
                 auth.signOut()
-                Log.d("HomeFragment", "User logout")
                 Toast.makeText(context, "Logout effettuato", Toast.LENGTH_SHORT).show()
                 navController.navigate(R.id.action_homeFragment_to_signInFragment)
             } else {
-                Log.d("HomeFragment", "Nessun User logged in")
-                Toast.makeText(context, "Nessun utente attualmente loggato", Toast.LENGTH_SHORT).show()
+                 Toast.makeText(context, "Nessun utente attualmente loggato", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
 
     override fun onSaveTask(todo: String, todoEt: TextInputEditText, location: LatLng) {
-        Log.d("HomeFragment", "Salvando il park: $todo con posizione: $location")
 
         val taskData = mapOf(
             "Park" to todo,
@@ -119,20 +115,20 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
         taskRef.setValue(taskData).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val message =
-                    if (isEditing) "Park aggiornato correttamente" else "Park salvato correttamente"
+                    if (isEditing) {
+                        "Park aggiornato correttamente"
+                    } else {
+                        "Park salvato correttamente"
+                    }
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                Log.d("HomeFragment", message)
-
                 todoEt.text = null
 
                 if (!isEditing) {
-                    val updateToDoData =
-                        ToDoData(popUpFragment.toDoData?.taskId ?: "", todo, location)
+                    val updateToDoData = ToDoData(popUpFragment.toDoData?.taskId ?: "", todo, location)
                     val index = mList.indexOfFirst { it.taskId == updateToDoData.taskId }
                     if (index != -1) {
                         mList[index] = updateToDoData
                         adapter.notifyItemChanged(index)
-
                     }
                     isEditing = false
                 } else {
@@ -140,16 +136,10 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
                         val newToDoData = ToDoData(key, todo, location)
                         mList.add(newToDoData)
                         adapter.notifyItemInserted(mList.size - 1)
-
                     }
                 }
             } else {
-
-                Toast.makeText(
-                    context,
-                    "Errore nel salvataggio: ${task.exception?.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, "Errore nel salvataggio: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
             popUpFragment.dismiss()
         }
@@ -158,29 +148,33 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
     private fun getDataFromFirebase() {
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                //clear per assicurarsi che la lista contenga i dati appena recuperati
                 mList.clear()
+                //scorro ogni elem/figlio
                 for (taskSnapshot in snapshot.children) {
+
+                    //estraggo i dati
                     val taskId = taskSnapshot.key
                     val taskTitle = taskSnapshot.child("Park").getValue(String::class.java)
                     val locationSnapshot = taskSnapshot.child("Posizione")
+
                     val location = LatLng(
                         locationSnapshot.child("latitudine").getValue(Double::class.java) ?: 0.0,
                         locationSnapshot.child("longitudine").getValue(Double::class.java) ?: 0.0,
                     )
-
 
                     if (taskId != null && taskTitle != null) {
                         val todoTask = ToDoData(taskSnapshot.key!!, taskTitle, location)
                         mList.add(todoTask)
                     }
                 }
+                //avvisa l'adapter che i dati sono stati aggiornati
                 adapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
-
         })
     }
 
@@ -190,7 +184,6 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
                 Toast.makeText(context, "Cancellazione effettuata", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT).show()
-
             }
         }
     }
@@ -206,7 +199,9 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
     }
 
     override fun onMapClicked(toDoData: ToDoData) {
+        //creo uri per usare lat long
         val uri = Uri.parse("geo:${toDoData.location?.latitude},${toDoData.location?.longitude}")
+        //visualizzo pos geo
         val mapIntent = Intent(Intent.ACTION_VIEW, uri)
         mapIntent.setPackage("com.google.android.apps.maps")
         startActivity(mapIntent)
@@ -215,19 +210,16 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
     override fun onShareLocationClicked(toDoData: ToDoData) {
         val location = toDoData.location
         if (location != null) {
-            val address =
-                getAddressFromLocation(requireContext(), location.latitude, location.longitude)
+            val address = getAddressFromLocation(requireContext(), location.latitude, location.longitude)
             val shareMessage =
                 if (address != "Indirizzo non trovato") {
                     "La macchina è parcheggiata qui: $address (Latitudine: ${location.latitude}, Longitudine: ${location.longitude})"
-
                 } else {
-                    "La macchina è parcheggiata qui: Latitudine: ${location.latitude}, Longitudine: ${location.longitude}"
-
+                    "Indirizzo non trovato"
                 }
 
             val shareIntent = Intent().apply {
-                action = Intent.ACTION_SEND
+                action = Intent.ACTION_SEND  //per inviare dati
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, shareMessage)
             }
@@ -260,6 +252,4 @@ class HomeFragment : Fragment(), AddParkPopUpFragment.DialogBtnClickListener, To
             "Errore nell'ottenere l'indirizzo"
         }
     }
-
-
 }

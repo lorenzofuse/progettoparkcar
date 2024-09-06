@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.progettoparkcar.databinding.EachparkBinding
-import com.example.progettoparkcar.databinding.FragmentAddParkPopUpBinding
 import java.util.Locale
 
 class ToDoAdapter(private val list: MutableList<ToDoData>) :
@@ -32,11 +31,12 @@ class ToDoAdapter(private val list: MutableList<ToDoData>) :
     override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {
         with(holder) {
             with(list[position]) {
+
                 binding.todoTask.text = this.task
 
                 val location = this.location
                 if (location != null) {
-                    val geocoder = Geocoder(binding.root.context, Locale.getDefault())
+                    val geocoder = Geocoder(binding.root.context, Locale.getDefault()) //traduce lat long in indirizzo leggibile
                     val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
                     val address = if (addresses!!.isNotEmpty()) {
