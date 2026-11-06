@@ -1,1 +1,1 @@
-App per memorizzare la posizione dell'auto (tramite geolocalizzazione con GPS), ricordare i posti nella quale viene parcheggiata (inserendo i dati in un database) e in grado di condividere una posizione salvata.
+App per memorizzare la posizione dell'auto (tramite geolocalizzazione con GPS), ricordare i posti nella quale viene parcheggiata (inserendo i dati in un database) e in grado di condividere una posizione salvata, progetto - Programmazione Dispositivi Mobili (F004 - Insubria)
